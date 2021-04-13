@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    android:id="@+id/navmen"
+    android:orderInCategory="100"
+    >
+    <item
+        android:id="@+id/nav_home"
+        android:orderInCategory="00"
+        android:title="home"
+        />
+    <item
+        android:id="@+id/nav_fav"
+        android:orderInCategory="100"
+        android:title="favorites"
+        />
+    <item
+        android:id="@+id/nav_set"
+        android:title="settings"
+        android:orderInCategory="200"
+        />
+    <item
+        android:id="@+id/nav_help"
+        android:title="help"
+        android:orderInCategory="300"
+        />
 </menu>

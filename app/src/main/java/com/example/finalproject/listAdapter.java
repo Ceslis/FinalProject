@@ -1,46 +1,77 @@
 package com.example.finalproject;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class listAdapter extends ArrayAdapter {
-    private ArrayList<listItem> messages;
-    private Integer[] imageid;
+import java.util.ArrayList;
+import java.util.Locale;
+
+public class listAdapter extends ArrayAdapter implements Filterable {
+    private ArrayList<listItem> articles;
+    private ArrayList<listItem> filteredArticles;
     private Activity context;
 
-    public listAdapter(Activity context, ArrayList message, Integer[] imageid) {
-        super(context, R.layout.list_layout, message);
+
+    public listAdapter(Activity context, ArrayList article) {
+        super(context, R.layout.list_layout, article);
         this.context = context;
-        this.messages = message;
-        this.imageid = imageid;
+        this.articles = article;
+        filteredArticles = new ArrayList<listItem>();
 
     }
-    public listAdapter(Activity context, ArrayList message) {
-        super(context, R.layout.list_layout, message);
-        this.context = context;
-        this.messages = message;
-        this.imageid = null;
+
+    //here we have our filter to limit remove articles not fitting the title
+    public void filter(String charText) {
+
+        charText = charText.toLowerCase(Locale.getDefault());
+        //move all itmes to another list so that we can rebuild a filtered set
+        filteredArticles.addAll(articles);
+        articles.clear();
+        listItem temp;
+
+        if (charText.length() == 0) {
+
+            return;
+        } else {
+            //go through our list
+            for (int i=0;i<filteredArticles.size();i++) {
+
+                temp = filteredArticles.get(i);
+                //add matching entries
+                if (temp.getTitle().toLowerCase().contains(charText)) {
+                        articles.add(temp);
+                    }
+            }
+            //empty our temporary list for reuse
+            filteredArticles.clear();
+        }
+        notifyDataSetChanged();
+
 
     }
+
     public int getCount(){
-        return messages.size();
+        return articles.size();
     }
 
 
     @Override
     public listItem getItem(int position) {
-        //return super.getItem(position);
-        return messages.get(position);
+        return articles.get(position);
     }
     public long getItemId(int position){
-        return messages.get(position).getId();
+        return articles.get(position).getId();
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -48,16 +79,11 @@ public class listAdapter extends ArrayAdapter {
         LayoutInflater inflater = context.getLayoutInflater();
         if(convertView==null)
             row = inflater.inflate(R.layout.list_layout, null, true);
-        TextView message = (TextView) row.findViewById(R.id.msg);
 
-        //positions for 2 people sending messages
-        ImageView imagePerson = (ImageView) row.findViewById(R.id.imageView);
+        TextView title = (TextView) row.findViewById(R.id.title);
 
 
-        message.setText(messages.get(position).getText());
-        if (messages.get(position).getSender().equals("receive")) {
-            imagePerson.setImageResource(imageid[1]);
-        }
+        title.setText(articles.get(position).getTitle());
 
         return  row;
     }

@@ -9,10 +9,12 @@ public class dataHelper extends SQLiteOpenHelper {
     final static String FILENAME = "MessagesDB";
     protected static String DB_NAME = "messages_db";
     protected static final int VERSION_NUM = 1;
-    public final static String TABLE_NAME = "MESSAGES";
-    public final static String COL_MESSAGE = "MESSAGE";
-    public final static String COL_TYPE = "Kind";
-    public final static String COL_ID = "id";
+    public final static String TABLE_NAME = "FAVORITES";
+    public final static String COL_TITLE = "TITLE";
+    public final static String COL_DATE = "DATE";
+    public final static String COL_DESC = "DESCRIPTION";
+    public final static String COL_LINK = "LINK";
+    public final static String COL_ID = "_ID";
 
     public dataHelper(Context ctx) {
         super(ctx, DB_NAME, null, VERSION_NUM);
@@ -27,7 +29,7 @@ public class dataHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE " + TABLE_NAME + " ( id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COL_MESSAGE + " TEXT, " + COL_TYPE + " TEXT);");
+                + COL_TITLE + " TEXT, " + COL_DATE + " TEXT, "  + COL_DESC + " TEXT, "  + COL_LINK + " TEXT);");
     }
 
     @Override
