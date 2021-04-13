@@ -5,7 +5,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -13,6 +15,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,9 +60,9 @@ public class details extends Fragment {
          de = (TextView) inflated.findViewById(R.id.aDesc);
          li = (TextView) inflated.findViewById(R.id.aLink);
 
-        fav = (Button) inflated.findViewById(R.id.fav);
-
-
+        fav = (Button) inflated.findViewById(R.id.favB);
+        //open our database and make sure it exists
+        favDB = new dataHelper(details.this.getContext());
 
         //if fragment is called from the favorites list, hide the favorite button
         if(getArguments().getBoolean("fav")){
@@ -79,9 +82,9 @@ public class details extends Fragment {
         fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction()
-                        .remove(details.this).commit();
+
                 //adds the article to favorites database
+
                 putDB(getArguments().getString("title"), getArguments().getString("date"), getArguments().getString("desc"), getArguments().getString("link"));
                 Toast.makeText(details.this.getContext() ,"Article added to favorites", Toast.LENGTH_LONG).show();
 
@@ -143,4 +146,7 @@ public class details extends Fragment {
         return id;
 
     }
+
+
+
 }

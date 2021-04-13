@@ -71,7 +71,7 @@ public class favorites extends AppCompatActivity implements NavigationView.OnNav
                         dialog.dismiss();
                     }
                 });
-
+                alert.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -100,13 +100,15 @@ public class favorites extends AppCompatActivity implements NavigationView.OnNav
                 alert.setTitle("Help");
 
                 //alert dialogue to choose if you ant to delete item
-                alert.setMessage("click on an article title to view more info \nA long click will give the option to delete the article from the list");
+                alert.setMessage("@string/fav_help");
                 alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                });                break;
+                });
+                alert.show();
+                break;
             }
         }
         //close navigation drawer
@@ -117,11 +119,11 @@ public class favorites extends AppCompatActivity implements NavigationView.OnNav
     }
 
 
-    dataHelper favDB ;
-    ArrayAdapter<String> adapter;
-    ArrayList<listItem> listItems=new ArrayList<listItem>();
-    EditText ed;
-    listAdapter listAdap;
+    protected dataHelper favDB ;
+    protected ArrayAdapter<String> adapter;
+    protected ArrayList<listItem> listItems=new ArrayList<listItem>();
+    protected EditText ed;
+    protected listAdapter listAdap;
 
     ListView myList;
 
@@ -147,8 +149,7 @@ public class favorites extends AppCompatActivity implements NavigationView.OnNav
 
         myList = (ListView) findViewById(R.id.listfav);
 
-        openDB();
-        listAdap = new listAdapter(this, listItems);
+        listAdap = new listAdapter(this, openDB());
         myList.setAdapter(listAdap);
 
         //click listener for deleting favorites
@@ -162,7 +163,7 @@ public class favorites extends AppCompatActivity implements NavigationView.OnNav
                 listItem temp = listAdap.getItem(position);
 
                 //alert dialogue to choose if you ant to delete item
-                alert.setMessage("Article selected:" + temp.getTitle() + "  " + temp.getDate() + "\n" + "The database id:" + listAdap.getItemId(position));
+                alert.setMessage("Article selected:" + temp.getTitle() + "  " + temp.getDate() + "\n" );
                 alert.setPositiveButton("yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -225,36 +226,34 @@ public class favorites extends AppCompatActivity implements NavigationView.OnNav
         public void removeDB(listItem article) {
             SQLiteDatabase db = favDB.getWritableDatabase();
 
-            db.delete(dataHelper.TABLE_NAME, dataHelper.COL_ID + "=" + Long.toString( article.getId()), null);
+            db.delete(dataHelper.TABLE_NAME, dataHelper.COL_TITLE + "=?",   new String[] {article.getTitle()});
+            //db.delete(dataHelper.TABLE_NAME, "_ID=?", new String[]{String.valueOf(article.getId())});
 
+            db.close();
         }
 
         //take items from the db and put them into our list
-        private void openDB() {
-            SQLiteDatabase db = favDB.getWritableDatabase();
+        private ArrayList<listItem> openDB() {
+            SQLiteDatabase db = favDB.getReadableDatabase();
             //try/catch incase our database doesn't exist or encounters an error
-            try {
                 Cursor c = db.rawQuery("SELECT * FROM " +
                                 favDB.TABLE_NAME
                         , null);
 
                 //iterate through our database to get all of its contentsa
-                if (c != null ) {
-                    if  (c.moveToFirst()) {
-                        do {
+                if (c.getCount() > 0 ) {
+                    while (c.moveToNext()) {
                             String ti = c.getString(c.getColumnIndex(dataHelper.COL_TITLE)), da = c.getString(c.getColumnIndex(dataHelper.COL_DATE));
                             String de = c.getString(c.getColumnIndex(dataHelper.COL_DESC)), li = c.getString(c.getColumnIndex(dataHelper.COL_LINK));
                             listItems.add((new listItem(ti, da, de, li)));
-                        }while (c.moveToNext());
-                    }
+                        }
+                    c.moveToFirst();
                 }
-            } catch (SQLiteException se ) {
-                Log.e(getClass().getSimpleName(), "Could not create or Open the database");
-            } finally {
-                if (db != null)
-                    db.execSQL("DELETE FROM " + dataHelper.TABLE_NAME);
+
+
+                c.close();
                 db.close();
-            }
+            return listItems;
 
         }
 

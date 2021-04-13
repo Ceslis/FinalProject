@@ -69,6 +69,7 @@ public class itemDetails extends AppCompatActivity implements NavigationView.OnN
                     }
                 });
 
+                alert.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -82,10 +83,16 @@ public class itemDetails extends AppCompatActivity implements NavigationView.OnN
         switch (item.getItemId()) {
 
             case R.id.nav_home: {
-                Intent choice = new Intent( itemDetails.this, favorites.class);
+                Intent choice = new Intent( itemDetails.this, MainActivity.class);
                 startActivity(choice);
                 break;
             }
+            case R.id.favorites:
+
+                Intent i = new Intent(itemDetails.this, favorites.class);
+                //start new intent
+                startActivity(i);
+                break;
             case R.id.nav_set: {
                 Intent choice = new Intent( itemDetails.this, settingsActivity.class);
                 startActivity(choice);
@@ -103,7 +110,9 @@ public class itemDetails extends AppCompatActivity implements NavigationView.OnN
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
-                });                break;
+                });
+                alert.show();
+                break;
             }
         }
         //close navigation drawer

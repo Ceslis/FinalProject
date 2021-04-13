@@ -109,7 +109,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //display help dialogue to explain this page
             case R.id.help:
 
+                //create alert dialogue that tells you how to use this interface
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                alert.setTitle("Help");
 
+                //alert dialogue to choose if you ant to delete item
+                alert.setMessage("click on an article title to view more info and an option of favoriting it \nA long click will remove the article from the list");
+                alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alert.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -134,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }case R.id.nav_help: {
 
                 //create alert dialogue that tells you how to use this interface
-                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                 alert.setTitle("Help");
 
                 //alert dialogue to choose if you ant to delete item
@@ -145,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         dialog.dismiss();
                     }
                 });
+                alert.show();
                 break;
             }
         }
@@ -179,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //add second language
 
         //settings to change language or clear all favorites and clear prefs?
-        //add shared prefs
 
 
         ed = (EditText) findViewById(R.id.txt);
@@ -275,8 +287,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 publishProgress(25);
                 results = loadXmlFromNetwork(urls[0]);
                 publishProgress(50);
-
-
                 publishProgress(100);
 
                 return results.toString();
@@ -408,7 +418,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return entries;
             }
 
-
             //create our parser and hand it to the method that will get all the info
             public ArrayList<String[]> parse(InputStream in) throws XmlPullParserException, IOException {
 
@@ -421,13 +430,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     in.close();
                 }
             }
-
         }
-
-
     }
-
-
 }
 
 
